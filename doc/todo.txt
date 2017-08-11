@@ -1,0 +1,145 @@
+# Format
+# ------
+# [FLAG (TODO | PROGRESS | DONE)]
+# [TOOL_NAME (dms | dme | dmr | dmc | dmi | g2dot | test)]
+# [PRIORITY (0 - highest, 9 - lowest)]
+# [ADD_DATE (DD.MM.YYYY) - COMPLETE_DATE (DD.MM.YYYY)]
+# [TASK]
+
+DONE
+dms
+0
+20.10.2001 - 23.10.2001
+Create STG reader.
+
+DONE
+g2dot
+3
+23.11.2001 - 12.12.2001
+Rewrite dot_write function with use of lists.
+
+DONE
+dms
+1
+23.11.2001 - 10.12.2001
+Rewrite stg_state_separation function with use of flag ST_PROCESSED.
+
+DONE
+g2dot
+2
+24.01.2002 - 03.02.2002
+Split direct mapping and drawing programs.Problem: STG_STATE_SEP flag is not saved to ASTG format.
+
+DONE
+dms
+1
+24.01.2002 - 25.01.2002
+Update state separation detection with fork and merge research.
+
+DONE
+dmr
+1
+24.01.2002 -29.01.2002
+Update refinement with fork and merge research.
+
+DONE
+dme
+0
+24.01.2002 - 26.01.2002
+Update output exposition after choice with mutual exclusion.
+
+DONE
+dmr
+1
+29.01.2002 - 30.01.2002
+Move marking when marked place is not state separation place. Problem: Reachable marking (unfolding?)
+
+DONE
+dms
+1
+30.01.2002 - 31.01.2002
+Add not removable state separation places (STG_PLACE_STATE_SEP_FORCE).
+
+DONE
+test
+0
+30.01.2002 - 31.01.2002
+Create tests.
+
+DONE
+dmr
+1
+31.01.2002 - 14.02.2002
+Improve procedure of moving marking when marked place is not state separation place. Problem: reachable marking (unfolding?)
+
+DONE
+dms
+1
+03.02.2002 - 19.02.2002
+Create procedure of determining signal level. Problem: tracing (unfolding?)
+
+DONE
+dms
+2
+03.02.2002 - 10.04.2002
+Add possibility to define not redundant places by means of command line.
+
+DONE
+dmr
+1
+10.02.2002 - 12.02.2002
+Improve the algorithm of naming newly created places and transition in order to avoid name repetitions.
+
+DONE
+dmr
+0
+12.02.2002 - 14.02.2002
+Compose a procedure of compression of PN merging places, transitions and arcs as possible.
+
+DONE
+g2dot
+1
+12.02.2002 - 15.02.2002
+Improve the procedure of composing DOT output trying to split switching conditions on reading arcs.
+
+DONE
+dmc
+1
+10.03.2002 - 15.03.2002
+Invent the format for DC request-acknowledgement and FF set-reset functions.
+
+DONE
+dmc
+1
+10.03.2002 - 15.03.2002
+Make convertor of STG to DC-FF info.
+
+DONE
+dmc
+1
+22.04.2002 - 25.04.2002
+Create VERILOG output.
+
+PROGRESS
+dmi
+0
+29.04.2002 - 
+Cheking DC and FF type names.
+
+PROGRESS
+dmi
+0
+29.04.2002 - 
+Implementation of DC and FF types on gate and transistor levels.
+
+DONE
+dmr
+0
+01.02.2003 - 14.02.2003
+Correct the recalculation of read arcs after deleting of fork transition.
+
+DONE
+dmr
+0
+12.02.2003 - 18.02.2003
+Add optimisation of join transitions by inserting dummy join transitions and recalculating arcs.

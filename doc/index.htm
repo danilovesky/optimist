@@ -1,0 +1,850 @@
+<html>
+  <header>
+    <title>
+      OptiMist
+    </title>
+  </header>
+  <body>
+
+<h1>
+OptiMist
+</h1>
+
+<p>
+<b>OptiMist (Optimise and Map)</b> is a package of tools that optimise Signal 
+Transition Graph specifications and map them into asynchronous circuits.
+</p>
+
+
+<h2>
+<a name=0>
+0. Table of content
+</a>
+</h2>
+
+<p>
+<ul>
+<li>
+<a href=#1>
+1. Download
+</a>
+</li>
+<li>
+<a href=#2>
+2. Installation
+</a>
+</li>
+<li>
+<a href=#3>
+3. Usage of the tools
+</a>
+</li>
+<li>
+<a href=#4>
+4. Summary of the method
+</a>
+  <ul>
+  <li>
+  <a href=#4_1>
+  4.1. Output exposure
+  </a>
+  </li>
+  <li>
+  <a href=#4_2>
+  4.2. Detection of redundant places
+  </a>
+  </li>
+  <li>
+  <a href=#4_3>
+  4.3. Elimination of redundant places
+  </a>
+  </li>
+  <li>
+  <a href=#4_4>
+  4.4. Mapping into circuit
+  </a>
+  </li>
+  </ul>
+</li>
+<li>
+<a href=#5>
+5. Advantages
+</a>
+</li>
+<li>
+<a href=#6>
+6. ToDo list
+</a>
+</li>
+<li>
+<a href=#7>
+7. References
+</a>
+</li>
+</ul>
+</p>
+
+
+<h2>
+<a name=1>
+1. Download
+</a>
+</h2>
+
+<p>
+The latest release of the tools can be found on 
+<a href="http://async.org.uk/besst/optimist/">OptiMist homepage</a>:
+</p>
+
+<ul>
+
+<li>
+<a href="http://async.org.uk/besst/optimist/optimist-1.0.tar.gz">
+Linux binaries
+</a>
+</li>
+
+<li>
+<a href="http://async.org.uk/besst/optimist/optimist-1.0.src.tar.gz">
+Source code
+</a>
+</li>
+
+<li>
+<a href="http://async.org.uk/besst/optimist/optimist-1.0.benchmarks.tar.gz">
+Benchmarks
+</a>
+</li>
+
+<li>
+Tutorial (under construction)
+</li>
+
+</ul>
+
+<p>
+The author of the OptiMist package can be contacted by e-mail:
+  danil (dot) sokolov (at) ncl (dot) ac (dot) uk
+</p>
+
+
+<h2>
+<a name=2>
+2. Installation
+</a>
+</h2>
+
+
+<p>
+If you compile OptiMist from source, then in order to obtain binary 
+executables as a non-root user do:
+<pre>
+<code>
+  $ make
+</code>
+</pre>
+</p>
+
+<p>
+This will compile six tools which form the OptiMist package:
+<code>om_detect</code>, <code>om_expose</code>, 
+<code>om_transform</code>, <code>om_verilog</code>, 
+<code>om_library</code> and <code>om_graph</code>.
+</p>
+
+<p>
+These tools can ether be used individually or by means of <code>optimist</code> script. 
+This script is already present in the source files directory. It connects all 
+OptiMist tools in one command-line interface.
+</p>
+
+<p>
+In order to start using the OptiMist tools copy them into a directory which 
+is referenced from your <code>PATH</code> environment variable 
+(e.g. <code>/usr/local/bin/</code>). This can be done by running the 
+following command as root:
+<pre>
+<code>
+  $ make install
+</code>
+</pre>
+</p>
+
+<p>
+If you already have all executables then just put them into you a directory 
+which is referenced from your <code>PATH</code> environment variable.
+<p>
+
+
+<h2>
+<a name=3>
+3. Usage of the tools
+</a>
+</h2>
+
+<table>
+<tr>
+<td>
+This section explains how to use the OptiMist toolkit for direst mapping of asynchronous circuits from STGs. The toolkit contains the following tools (see the design flow figure):
+<ul>
+<li>
+  <code>optimist</code> - a wrapper script which is a front-end to the OptiMist tools;
+</li>
+<li>
+  <code>om_detec</code>t - a tool for detection of redundant places;
+</li>
+<li>
+  <code>om_expose</code> - a tool for exposure of the outputs;
+</li>
+<li>
+  <code>om_transform</code> - a tool for elimination of redundant places;
+</li>
+<li>
+  <code>om_verilog</code> - a tool for mapping of the optimised specification into a circuit;
+</li>
+<li>
+  <code>om_lib</code> -generation of a library of required DCs and FFs either at transistor- or gate-level;
+</li>
+<li>
+  <code>om_graph</code> - a tool for visualisation of an STG with read-arcs extension and tracker-bouncer structure.
+</li>
+</ul>
+The usage of the tools is described in the following sections.
+</td>
+<td>
+  <img src="optimist.gif" alt="OptiMist design flow"> 
+</td>
+</tr>
+</table>
+
+
+<h4>
+  OptiMist wrapper script
+</h4>
+
+<p>
+The easiest way to process an STG file is to give it as a parameter to the 
+optimist script:
+</p>
+
+<p>
+<pre>
+<code>
+  $ optimist file.g
+</pre>
+</code>
+</p>
+
+<p>
+This script calles OptiMist tools with necessary command-line prameters
+and creates the following files:
+</p>
+
+<dl>
+<dt>
+<code> 
+file_3.g 
+</code> 
+</dt>
+<dd>
+STG where redundant places are detected using heuristics A, B and C
+</dd>
+
+<dt>
+<code> 
+file_3e.g 
+</code>
+</dt>
+<dd>
+STG where the detected redundant places are tagged and outputs are exposed
+</dd>
+
+<dt>
+<code> 
+file_3et.g 
+</code>
+</dt>
+<dd>
+STG from which redundant places are removed
+</dd>
+</dl>
+
+<p>
+By default the input STG is optimised using all heuristics. The minimum number
+of DC in a loop is set to 3. The maximum join transition fanin is limited by 2.
+This options can be overridden by using command-line parameters whose full list 
+of is shown below:
+</p>
+
+<p>
+<pre>
+<code>
+  Usage: optimist [OPTIONS] INPUT_FILE_NAME
+  OPTIONS:
+  -l, --level[N]                  level of redundant places detection (N=0,1,2,[3])
+        0 = all places are tagged as non-redundant
+        1 = 0 + heuristic A is used to detect redundant places
+        2 = 1 + heuristics B is applied to detect redundant places
+        3 = 2 + heuristic C is applied to detect redundant places
+        Heuristic A (latency reduction): Places after input transitions but
+                before output transitions are tagged as redundant.
+        Heuristic B (size reduction): The chains of places between redundant
+                places which are detected by heuristic A are considered. The
+                places of each chain are tagged starting from the beginning of
+                the chain and going in the direction of consuming-producing
+                arcs. The last place in each chain is skipped.
+        Heuristic C (size reduction): All non-tagged places (which are the
+                last places in the chains) are tagged individually.
+  -r, --redundant PLACE_LIST      list of predefined redundant places []
+  -s, --separator PLACE_LIST      list of predefined mandatory places []
+  -n, --num-loop[N]               minimum number of DC in a loop (N=1,2,[3])
+  -j, --join-fanin[N]             max join transitions fanin (N=[0],1,2,3)
+        0 = no control on the join transitions fanin
+        1-3 = restrict join transitions fanin to the given number,
+        higher value for this parameter is not practical
+  -v, --verilog                   map STG into Verilog netlist
+  -i, --info                      include circuit statitstics into netlist
+  -t, --test                      generate circuit ready for off-line testing
+  -g, --graph                     draw STG in PostScript format
+  -d, --debug                     print debug information
+  -h, --help                      print this help
+</code>
+</pre>
+</p>
+
+<p>
+
+</p>
+For example, the same file can be processed with the following command-line parameters:
+<p>
+<pre>
+<code>
+  $ optimist -l2 -v -g file.g
+</pre>
+</code>
+</p>
+
+<p>
+or
+</p>
+
+<p>
+<pre>
+<code>
+  $ optimist --level2 --verilog --graph file.g
+</pre>
+</code>
+</p>
+
+<p>
+This command will produce the following set of files:
+</p>
+
+<dl>
+<dt>
+<code> 
+file_2.g 
+</code> 
+</dt>
+<dd>
+STG where redundant places are detected using heuristics A and B
+</dd>
+
+<dt>
+<code> 
+file_2e.g 
+</code>
+</dt>
+<dd>
+STG where the detected redundant places are tagged and outputs are exposed
+</dd>
+
+<dt>
+<code> 
+file_2et.g 
+</code>
+</dt>
+<dd>
+STG from which redundant places are removed
+</dd>
+
+<dt>
+<code> 
+file_2et.v
+</code>
+</dt>
+<dd>
+Verilog netlist obtained by mapping the STG into DCs and FFs
+</dd>
+
+<dt>
+<code> 
+file_2.ps
+</code> 
+</dt>
+<dd>
+PostScript file for the STG where redundant places are detected using heuristics A and B
+</dd>
+
+<dt>
+<code> 
+file_2e.ps 
+</code>
+</dt>
+<dd>
+PostScript file for the STG where the detected redundant places are tagged and outputs are exposed
+</dd>
+
+<dt>
+<code> 
+file_2et.ps 
+</code>
+</dt>
+<dd>
+PostScript file for the STG from which redundant places are removed
+</dd>
+</dl>
+
+<p>
+The OptiMist tools can also be executed individually. It might be neccessary in 
+order to get access to their really used command line parameters which are described 
+in the followiin sections.
+
+<h4>
+  OptiMist tool for detection of redundant places
+</h4>
+
+<p>
+<pre>
+<code>
+  Usage: om_detect [FLAGS] [IN_FILE_NAME]
+  FILE OPTIONS:
+  -o, --output OUT_FILE_NAME  output file [STDOUT]
+  GENERAL OPTIONS:
+  -l, --level[N]              level of redundant places detection (N=0,1,2,[3])
+      0 = all places are tagged as non-redundant
+      1 = 0 + heuristic A is used to detect redundant places
+      2 = 1 + heuristics B is applied to detect redundant places
+      3 = 2 + heuristic C is applied to detect redundant places
+      Heuristic A (latency reduction): Places after input transitions but
+          before output transitions are tagged as redundant.
+      Heuristic B (size reduction): The chains of places between redundant
+          places which are detected by heuristic A are considered. The places
+          of each chain are tagged starting from the beginning of the chain
+          and going in the direction of consuming-producing arcs. The last
+          place in each chain is skipped.
+      Heuristic C (size reduction): All non-tagged places (which are the last
+          places in the chains) are tagged individually.
+  -n, --num-loop[N]           minimum number of DC in a loop (N=1,2,[3])
+  -f, --fork                  consider places after fork as mandatory
+  -j, --join                  consider places after join as mandatory
+  -c, --choice                consider choice places as mandatory
+  -m, --merge                 consider merge places as mandatory
+  -t, --token                 consider places marked with a token as mandatory
+  -r, --redundant PLACE_LIST  list of predefined redundant places []
+  -s, --separator PLACE_LIST  list of predefined mandatory places []
+  INFORMATION OPTIONS:
+  -d, --debug[N]              level of debug information (N=[0],1,2,3,4)
+  -v, --version               print version and copyright
+  -h, --help                  print this help
+</code>
+</pre>
+</p>
+
+
+<h4>
+OptiMist tool for exposure of outputs
+</h4>
+
+<p>
+<pre>
+<code>
+  Usage: om_expose [FLAGS] [IN_FILE_NAME]
+  FILE OPTIONS:
+  -o, --output OUT_FILE_NAME  output file [STDOUT]
+  INFORMATION OPTIONS:
+  -d, --debug[N]              level of debug information (N=[0],1,2,3,4)
+  -v, --version               print version and copyright
+  -h, --help                  print this help
+</code>
+</pre>
+</p>
+
+
+<h4>
+OptiMist tool for elimination of redundant places
+</h4>
+
+<p>
+<pre>
+<code>
+  Usage: om_transform [FLAGS] [IN_FILE_NAME]
+  FILE OPTIONS:
+  -o, --output OUT_FILE_NAME  output file [STDOUT]
+  GENERAL OPTIONS:
+  -l, --level[N]              level of transformation (N=0,1,2,3,4,[5])
+      0 = remove transient arcs only
+      1 = 0 + move initial marking to mandatory places
+      2 = 1 + recalculate contect signals
+      3 = 2 + eliminate redundant places
+      4 = 3 + remove transient arcs, not connected places and transitions
+      5 = 4 + simplify join transitions
+  -j, --join-fanin[N]         max join transitions fanin (N=[0],1,2,3)
+      0 = no control on the join transitions fanin
+    1-3 = restrict join transitions fanin to the given number,
+          higher value for this parameter is not practical
+  INFORMATION OPTIONS:
+  -d, --debug[N]              level of debug information (N=[0],1,2,3,4)
+  -v, --version               print version and copyright
+  -h, --help                  print this help
+</code>
+</pre>
+</p>
+
+
+<h4>
+Optimist tool for mapping STG into Verilog netlist
+</h4>
+
+<p>
+<pre>
+<code>
+  Usage: om_verilog [FLAGS] [IN_FILE_NAME]
+  FILE OPTIONS:
+  -o, --output OUT_FILE_NAME  output file [STDOUT]
+  GENERAL OPTIONS:
+  -t, --test                  generate circuit ready for online testing
+  -s, --statistics            include statistic comments into Verilog netlist
+  -dc,--david_cell            provide detail DC statistics
+  -ff,--flip_flop             provide detail FF statistics
+  -i, --input                 provide input signals statistics
+  INFORMATION OPTIONS:
+  -d, --debug[N]              level of debug information (N=[0],1,2,3,4)
+  -v, --version               print version and copyright
+  -h, --help                  print this help
+</code>
+</pre>
+</p>
+
+
+<h4>
+OptiMist tool for generation of Verilog netlist for DCs and FFs
+</h4>
+
+<p>
+<pre>
+<code>
+  Usage: om_lib [FLAGS] [ELEMENT_NAME]
+  FILE OPTIONS:
+  -o, --output OUT_FILE_NAME  output file [STDOUT]
+  GENERAL OPTIONS:
+  -f, --format[N]             format of the output data (N=0,1,2,[3])
+      0 = check the validity of the element name
+      1 = pins description
+      2 = gate-level Verilog netlist
+      3 = transistor-level Verilog netlist
+  INFORMATION OPTIONS:
+  -d, --debug[N]              level of debug information (N=[0],1,2,3,4)
+  -v, --version               print version and copyright
+  -h, --help                  print this help
+</code>
+</pre>
+</p>
+
+
+<h4>
+OptiMist tool for drawing STG using GraphVis DOT format
+</h4>
+
+<p>
+<pre>
+<code>
+  Usage: om_graph [FLAGS] [IN_FILE_NAME]
+  FILE OPTIONS:
+  -o, --output OUT_FILE_NAME  output file [STDOUT]
+  GENERAL OPTIONS:
+  -l, --legend                show legend
+  -c, --connect               connect read-arcs to places
+  -i, --inputs                show elementary cycles for inputs
+  INFORMATION OPTIONS:
+  -d, --debug[N]              level of debug information (N=[0],1,2,3,4)
+  -v, --version               print version and copyright
+  -h, --help                  print this help
+</code>
+</pre>
+</p>
+
+
+<h2>
+<a name=4>
+4. Summary of the Method
+</a>
+</h2>
+
+<p>
+The OptiMist package optimises STG specifications and map them into 
+asynchronous circuits in 4 stages:
+</p>
+
+<ol>
+
+<li>
+  output exposure
+</li>
+
+<li>
+  detection of redundant places
+</li>
+
+<li>
+  elimination of redundant places
+</li>
+
+<li>
+  mapping of into circuit
+</li>
+
+</ol>
+
+
+<h3>
+<a name=4_1>
+4.1. Output exposure
+</a>
+</h3>
+
+<p>
+At this stage the initially closed (with both input and output transitions) 
+system specification is transferred into an open system specification using 
+the concept of environment tracking and output exposure [<a href=#ref_1>1</a>]. The resultant 
+specification consists of two blocks: a tracker and a bouncer. The tracker 
+follows the behaviour of the environment and generates context signals for 
+the bouncer. The bouncer is a set of elementary cycles, each of which 
+represents an output signal. An elementary cycle consists of two places, 
+corresponding to low and high levels of the signal, and positive and negative 
+transitions of the signal. The elementary cycle switches between low and high 
+states using a signal from the tracker.
+</p>
+
+<h3>
+<a name=4_2>
+4.2. Detection of redundant places
+</a>
+</h3>
+
+<p>
+When outputs are exposed some places in the tracker become redundant, because 
+an output can be switched by directly preceding input signal without using 
+intermediate state of the tracker. Many tracker places can thus be removed, 
+provided that the system behaviour is preserved w.r.t. input-output interface 
+(weak bisimulation). Their elimination is however restricted by potential 
+coding conflicts (which may cause tracker errors) and implementation 
+constraints (at least three DCs in every loop). Redundant places are detected 
+using a set of optimisation heuristics 
+[<a href=#ref_2>2</a>,<a href=#ref_3>3</a>,<a href=#ref_4>4</a>]. 
+Initially all places are not 
+tagged. Then every place is given a tag: redundant (if the place can be 
+removed) or mandatory (if the place is necessary). The heuristics define 
+the order in which the places should be checked.
+</p>
+
+<dl>
+
+<dt>
+<b>
+Heuristic A (latency reduction):
+</b>
+</dt>
+<dd>
+  Places after input but before output transitions are tagged as redundant.
+</dd>
+</p>
+
+<dt>
+<b>
+Heuristic B (size reduction): 
+</b>
+</dt>
+<dd>
+  The chains of places between redundant places detected in the previous 
+  heuristic are considered. The places of each chain are tagged  starting 
+  from the beginning of the chain and going in the direction of consuming 
+  arcs. The last place in each chain is not tagged.
+</dd>
+
+
+<dt>
+<b>
+Heuristic C (size reduction): 
+</b>
+</dt>
+<dd>
+  All non-tagged places (the last places in the chains) are tagged 
+  individually.
+</dd>
+
+</dl>
+
+<h3>
+<a name=4_3>
+4.3. Elimination of redundant places
+</a>
+</h3>
+
+<p>
+At this stage redundant places are removed from the tracker one by one. 
+After a removal of each place the specification is modified preserving 
+the behaviour of the system. If a place has only one preceding transition 
+and one succeeding transition then the modification is trivial (the place 
+is deleted and the conjugate transitions are replaced by one). In case of 
+more then one preceding or succeeding transitions, more sophisticated 
+transformation is required for place removal.
+</p>
+
+<p>
+Sometimes the number of context signals (signals from tracker) for an 
+elementary cycle is increasing after removal of a redundant place. This 
+can be explained by the splitting of a mandatory place before the deep 
+hierarchy of forks and the recalculation of context signals from redundant 
+places to the split places. The solution to this problem is to evaluate 
+the complexity of elements by calculating the maximum number of incoming 
+arcs into a transition before and after removal of every place. If this 
+number is increasing (or at least is increasing beyond the maximum 
+implementable value), then the place should be kept in the specification. 
+This is the element complexity optimisation technique which reduces the 
+size of the circuit by preventing complication of logic rather than 
+reducing the number of state holding elements.
+</p>
+
+<h3>
+<a name=4_4>
+4.4. Mapping into circuit
+</a>
+</h3>
+
+<p>
+Finally, the places of the tracker are mapped into David Cells (DCs) and 
+the elementary cycles are mapped into set-reset flip-flops (FFs). The 
+netlist of DCs and FFs is generated in Verilog format.
+</p>
+
+
+<h2>
+<a name=5>
+5. Advantages
+</a>
+</h2>
+
+<ul>
+
+<li>
+  Generated circuits have low output latency.
+</li>
+
+<li>
+  All optimisation is performed at the specification level as opposed to 
+  optimisation of logic circuits after the stage of synthesis.
+</li>
+
+<li>
+  Tool can process large specifications (which are not computable by logic 
+  synthesis tools in acceptable time), because optimisation is performed 
+  locally and the computation time grows almost linear with the size of 
+  specification.
+</li>
+
+<li>
+  The tools are extremely fast, which allows the designer to try different 
+  combinations of heuristics and different start points of optimisation.
+</li>
+
+<li>
+  The element complexity optimisation facilitates technology mapping by 
+  restricting the growth of logic element fanin.
+</li>
+
+<li>
+  The tools are fully automated. At the same time a designer can 
+  significantly influence on the result at the stage of redundant place 
+  detection by choosing one or more of the proposed heuristics.
+</li>
+
+<li>
+  OptiMist package can be employed in combination with Cadence to allow 
+  simulation and technology mapping of circuits. A basic library of DCs 
+  and FFs has been created for Cadence. It can be expanded, if necessary, 
+  using a tool from the package which generates a Verilog implementing 
+  DCs and FFs at transistor level.
+</li>
+
+</ul>
+
+
+<h2>
+<a name=6>
+6. ToDo list
+</a>
+</h2>
+
+<ul>
+
+<li>
+  To improve the algorithm of redundant place detection to avoid growth of 
+  DCs/FFs fanins.
+</li>
+
+<li>
+  To try several start points in redundant place detection procedure and 
+  automatically select the best result.
+</li>
+</ul>
+
+
+<h2>
+<a name=7>
+7. References
+</a>
+</h2>
+
+<ol>
+<li>
+<a name=ref_1>
+    A.Bystrov and A.Yakovlev, 
+    "Asynchronous circuit synthesis by direct mapping: Interfacing to environment",
+    In Proc. International Symposium on Advanced Research in Asynchronous Circuits and Systems,
+    pages 127-136, Manchester, UK, April 2002.
+</a>
+</li>
+
+<li>    
+<a name=ref_2>
+    D.Sokolov, A.Bystrov and A.Yakovlev, 
+    "Automated design of low-latency asynchronous circuits by direct mapping", 
+    Postgraduate Research Conference in Electronics, Photonics, Communications and Software, 
+    Notingham, UK, April 2002.
+</a>
+</li>
+
+<li>    
+<a name=ref_3>
+    D.Sokolov, A.Bystrov and A.Yakovlev, 
+    "Tools for STG optimisation in the direct mapping of asynchronous circuits", 
+    12th UK Asynchronous Forum, 
+    London, UK, June 2002.
+</a>
+</li>
+
+<li>    
+<a name=ref_4>
+    D.Sokolov, A.Bystrov and A.Yakovlev, 
+    "STG optimisation in the direct mapping of asynchronous circuits", 
+    In Proc. of Design Automation and Test in Europe, 
+    pages 932-937, Munich, Mart 2003.
+</a>
+</li>
+
+</ol>       
+
+  </body>
+</html>
+

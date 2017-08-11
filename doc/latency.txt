@@ -1,0 +1,55 @@
+Library: Cadence AMS CSX33
+--------------------------
+Input slope: 0.1ns
+Output load: 0.015pF 
+
+Cell   Rise        Fall     
+name   (ns)        (ns)       
+       min   max   min   max
+       
+IN1   [0.10] 0.10 [0.11] 0.11  
+
+NA2   [0.11] 0.12  0.11  0.11  
+NO2    0.11  0.13 [0.16] 0.19  
+                               
+NA3   [0.13] 0.18  0.11  0.13  
+NO3    0.11  0.19 [0.19] 0.30  
+    
+                          
+trans   cooficient
+stack    n      p     avg
+      
+1       1.00   1.00   1.00
+2       1.10   1.45   1.28
+3       1.30   1.72   1.51
+
+			       
+Library: Cadence AMS C35
+--------------------------
+Input slope: 0.05
+Output load: 0.001pF 
+
+Cell   Rise        Fall        
+name   (ns)        (ns)         
+       min   max   min   max   
+       
+IN1   [0.05] 0.05 [0.03] 0.03  
+
+NA2   [0.06] 0.08  0.03  0.04  
+NO2    0.06  0.08 [0.05] 0.07  
+                               
+NA3   [0.09] 0.16  0.04  0.06  
+NO3    0.07  0.12 [0.07] 0.11  
+                               
+NA4   [0.11] 0.25  0.04  0.08  
+NO4    0.07  0.18 [0.09] 0.19  
+
+                  
+trans   cooficient
+stack    n      p     avg
+      
+1       1.00   1.00   1.00 
+2       1.20   1.67   1.44
+3       1.80   2.33   2.06
+4       2.20   3.00   2.60
+                      			       

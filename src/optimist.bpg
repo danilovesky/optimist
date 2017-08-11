@@ -1,0 +1,40 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.02.5
+#------------------------------------------------------------------------------
+ifndef ROOT
+ROOT = /usr/local/share/kylix3
+endif
+#------------------------------------------------------------------------------
+MAKE = make -$(MAKEFLAGS) -f$**
+DCC =dcc $<
+#------------------------------------------------------------------------------
+PROJECTS = om_detect om_expose om_transform om_graph om_verilog om_library
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+om_detect: omd.bpr
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $<).mak
+
+om_expose: ome.bpr
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $<).mak
+
+om_transform: omt.bpr
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $<).mak
+
+om_verilog: omv.bpr
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $<).mak
+
+om_library: oml.bpr
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $<).mak
+
+om_graph: omg.bpr
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $<).mak
+
+
